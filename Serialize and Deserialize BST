@@ -1,0 +1,132 @@
+Serialization is converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+
+Design an algorithm to serialize and deserialize a binary search tree. There is no restriction on how your serialization/deserialization algorithm should work. You need to ensure that a binary search tree can be serialized to a string, and this string can be deserialized to the original tree structure.
+
+The encoded string should be as compact as possible.
+
+ 
+
+Example 1:
+
+Input: root = [2,1,3]
+Output: [2,1,3]
+Example 2:
+
+Input: root = []
+Output: []
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [0, 104].
+0 <= Node.val <= 104
+The input tree is guaranteed to be a binary search tree.
+
+//cpp my solution
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+#define sh st+="#";
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        string st="";
+        queue<TreeNode*> qe;
+        qe.push(root);
+        
+        if(root == NULL)
+            return "";
+        
+        if(root!=NULL)
+            st+=to_string(root->val);
+        sh
+        
+        while(!qe.empty()){
+            TreeNode* node= qe.front();
+            qe.pop();
+            
+            if(node->left !=NULL){
+                st+=to_string(node->left->val);
+                qe.push(node->left);
+            }
+            sh
+            
+            if(node->right !=NULL){
+                st+=to_string(node->right->val);
+                qe.push(node->right);
+            }
+            sh
+        }
+        
+        return st;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data == "")
+            return nullptr;
+        
+        string delimiter = "#";
+
+        size_t pos = 0;
+        string token;
+        queue<TreeNode*> qe;
+        
+        int sw=1;
+        TreeNode *node,*root=nullptr;
+        
+        while ((pos = data.find(delimiter)) != string::npos) {
+            token = data.substr(0, pos);
+            if(root == nullptr){
+                root = new TreeNode(stoi(token));
+                qe.push(root);
+            }else{
+                if(sw==1){
+                    node = qe.front();
+                    qe.pop();
+                }
+                
+                switch(sw){
+                    case 1:
+                            if(token == ""){
+                                node->left = nullptr;                 
+                            }else{
+                                node->left = new TreeNode(stoi(token));
+                                qe.push(node->left);
+                            }
+                            ++sw;
+                            break;
+                    case 2:
+                            if(token == ""){
+                                node->right = nullptr;
+                            }else{
+                                node->right = new TreeNode(stoi(token));
+                                qe.push(node->right);
+                            }
+                            --sw;
+                            break;
+                }
+            }
+            
+            data.erase(0, pos + delimiter.length());
+        }
+        
+        return root;
+    }
+};
+
+// Your Codec object will be instantiated and called as such:
+// Codec* ser = new Codec();
+// Codec* deser = new Codec();
+// string tree = ser->serialize(root);
+// TreeNode* ans = deser->deserialize(tree);
+// return ans;
