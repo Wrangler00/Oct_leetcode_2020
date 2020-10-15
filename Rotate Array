@@ -1,0 +1,79 @@
+Given an array, rotate the array to the right by k steps, where k is non-negative.
+
+Follow up:
+
+Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.
+Could you do it in-place with O(1) extra space?
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation:
+rotate 1 steps to the right: [7,1,2,3,4,5,6]
+rotate 2 steps to the right: [6,7,1,2,3,4,5]
+rotate 3 steps to the right: [5,6,7,1,2,3,4]
+Example 2:
+
+Input: nums = [-1,-100,3,99], k = 2
+Output: [3,99,-1,-100]
+Explanation: 
+rotate 1 steps to the right: [99,-1,-100,3]
+rotate 2 steps to the right: [3,99,-1,-100]
+ 
+
+Constraints:
+
+1 <= nums.length <= 2 * 104
+-231 <= nums[i] <= 231 - 1
+0 <= k <= 105
+
+
+//cpp my solutions
+//for reverse solution took hint
+
+class Solution {
+public:
+    void swap(int &a,int &b){
+        int tmp = a;
+        a = b;
+        b = tmp;
+    }
+    void reverseit(vector<int>& nums,int l,int r){
+        --r;
+        while(l<r){
+            swap(nums[l++],nums[r--]);
+        }
+    }
+    
+    //using inbuilt reverse
+    void sol1(vector<int>& nums,int k){
+        reverse(nums.begin(),nums.end());
+        reverse(nums.begin(),nums.begin()+k);
+        reverse(nums.begin()+k,nums.end());
+    }
+    
+    //using extra space
+    void sol2(vector<int>& nums,int k,int sz){
+        int i=0;
+        vector<int> tmp=nums;
+        while(i<sz){
+            nums[(i+k)%sz] = tmp[i];
+            i++;
+        }
+    }
+    
+    //using manual reverse
+    void sol3(vector<int>& nums,int k,int sz){
+        reverseit(nums,0,sz);
+        reverseit(nums,0,k);
+        reverseit(nums,k,sz);
+    }
+    void rotate(vector<int>& nums, int k) {
+        int sz = (int)nums.size();
+        k = k%sz;
+        sol3(nums,k,sz);
+        return;
+    }
+};
