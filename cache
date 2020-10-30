@@ -1,0 +1,41 @@
+class Solution {
+    int ans=0;
+    vector<int> nm;
+    int sz;
+    int maxx=0;
+public:
+    void dfs(int i,vector<int>& tillnow){
+        if(i>=sz)   return;
+        int z = (int)tillnow.size();
+        // if(z+sz-i<=maxx) return;
+        int prev=maxx;
+        if(z==0){
+            tillnow.push_back(nm[i]);
+            maxx = max(maxx,1);
+            z=1;
+            if(prev==1)  ++ans;
+            else if(maxx>prev)   ans=1;
+        }else if(nm[i]>tillnow.back()){
+            tillnow.push_back(nm[i]);
+            ++z;
+            maxx = max(maxx,z);
+            if(prev==z)   ++ans;
+            else if(maxx>z)  ans=1;
+        }else   return;
+        
+        for(int j=i+1;j<sz;j++)
+            dfs(j,tillnow);
+        
+        if(z)   tillnow.pop_back();
+    }
+    int findNumberOfLIS(vector<int>& nmm) {
+        nm=nmm;
+        sz = nm.size();
+        
+        vector<int> aisehi;
+        for(int i=0;i<sz;i++)
+            dfs(i,aisehi);
+        cout<<maxx;
+        return ans;
+    }
+};
